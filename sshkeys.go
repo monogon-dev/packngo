@@ -52,8 +52,9 @@ func (s SSHKeyCreateRequest) String() string {
 
 // SSHKeyUpdateRequest type used to update an ssh key
 type SSHKeyUpdateRequest struct {
-	Label *string `json:"label,omitempty"`
-	Key   *string `json:"key,omitempty"`
+	Label       *string  `json:"label,omitempty"`
+	Key         *string  `json:"key,omitempty"`
+	InstanceIDs []string `json:"instances_ids"`
 }
 
 func (s SSHKeyUpdateRequest) String() string {
