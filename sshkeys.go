@@ -41,9 +41,10 @@ func (s SSHKey) String() string {
 
 // SSHKeyCreateRequest type used to create an ssh key
 type SSHKeyCreateRequest struct {
-	Label     string `json:"label"`
-	Key       string `json:"key"`
-	ProjectID string `json:"-"`
+	Label       string   `json:"label"`
+	Key         string   `json:"key"`
+	ProjectID   string   `json:"-"`
+	InstanceIDs []string `json:"instances_ids"`
 }
 
 func (s SSHKeyCreateRequest) String() string {
