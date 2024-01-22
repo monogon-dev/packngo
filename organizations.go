@@ -16,6 +16,7 @@ type OrganizationService interface {
 	Delete(string) (*Response, error)
 	ListPaymentMethods(string) ([]PaymentMethod, *Response, error)
 	ListEvents(string, *ListOptions) ([]Event, *Response, error)
+	ListHardwareReservations(string, *ListOptions) ([]HardwareReservation, *Response, error)
 }
 
 type organizationsRoot struct {
@@ -183,4 +184,29 @@ func (s *OrganizationServiceOp) ListEvents(organizationID string, listOpt *ListO
 	apiPath := path.Join(organizationBasePath, organizationID, eventBasePath)
 
 	return listEvents(s.client, apiPath, listOpt)
+}
+
+// ListHardwareReservations returns list of hardware reservations
+func (s *OrganizationServiceOp) ListHardwareReservations(organizationID string, opts *ListOptions) (reservations []HardwareReservation, resp *Response, err error) {
+	if validateErr := ValidateUUID(organizationID); validateErr != nil {
+		return nil, nil, validateErr
+	}
+
+	endpointPath := path.Join(organizationBasePath, organizationID, hardwareReservationBasePath)
+	apiPathQuery := opts.WithQuery(endpointPath)
+
+	for {
+		subset := new(hardwareReservationRoot)
+
+		resp, err = s.client.DoRequest("GET", apiPathQuery, nil, subset)
+		if err != nil {
+			return nil, resp, err
+		}
+
+		reservations = append(reservations, subset.HardwareReservations...)
+		if apiPathQuery = nextPage(subset.Meta, opts); apiPathQuery != "" {
+			continue
+		}
+		return
+	}
 }
